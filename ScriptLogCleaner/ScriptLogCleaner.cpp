@@ -25,6 +25,8 @@ along with ScriptLogCleaner.  If not, see <http://www.gnu.org/licenses/>.
 #define _USE_MATH_DEFINES
 #define _CRT_SECURE_NO_WARNINGS
 #define _SCL_SECURE_NO_WARNINGS
+#define ORIGINAL_COMMA_SEPARATION_VALUES ";"
+//#define ORIGINAL_COMMA_SEPARATION_VALUES "\t ,;:"
 #define COMMA_SEPARATION_VALUE ';'
 #define TOKEN_GOOD_NUMBER 21
 #define FIRST_GOOD_TOKEN "Index"
@@ -38,9 +40,10 @@ along with ScriptLogCleaner.  If not, see <http://www.gnu.org/licenses/>.
 
 
 
-void write_tokens(char* file_name, std::vector< std::vector<std::string> > &file_tokens) {
+void write_tokens(std::string file_name, std::vector< std::vector<std::string> > &file_tokens) {
   std::ofstream data_file;
-  data_file.open(file_name);
+  if (file_name.size()) data_file.open(file_name.c_str());
+  else std::cout << "No filename defined" << std::endl;
   if (!data_file) {
     std::cout << "Failure: file " << file_name << " could not be opened. Press a key to exit." << std::endl;
     std::cin.get();
@@ -60,13 +63,14 @@ void write_tokens(char* file_name, std::vector< std::vector<std::string> > &file
 }
 
 
-std::vector< std::vector<std::string> > tokenize(char* file_name) {
-  std::string line; 
-  std::vector<std::string> tokens; 
+std::vector< std::vector<std::string> > tokenize(std::string file_name) {
+  std::string line;
+  std::vector<std::string> tokens;
   std::vector< std::vector<std::string> > file_tokens;
   bool found = false;
-  std::ifstream data_file; 
-  data_file.open(file_name);
+  std::ifstream data_file;
+  if (file_name.size()) data_file.open(file_name.c_str());
+  else std::cout << "No filename defined" << std::endl;
   if (!data_file) {
     std::cout << "Failure: file " << file_name << " could not be opened. Press a key to exit." << std::endl;
     std::cin.get();
@@ -82,7 +86,7 @@ std::vector< std::vector<std::string> > tokenize(char* file_name) {
     std::getline(data_file, line);
     boost::algorithm::trim(line);
     if (line.size()){
-      boost::algorithm::split(tokens, line, boost::algorithm::is_any_of("\t ,;:"));
+      boost::algorithm::split(tokens, line, boost::algorithm::is_any_of(ORIGINAL_COMMA_SEPARATION_VALUES));
       if (tokens[0] == FIRST_GOOD_TOKEN) found = true;
       if (tokens.size() == TOKEN_GOOD_NUMBER && found) {
         file_tokens.push_back(tokens);
@@ -95,9 +99,21 @@ std::vector< std::vector<std::string> > tokenize(char* file_name) {
 }
 
 
-int main(int argc, char*argv[]) {
-  std::vector< std::vector<std::string> > file_tokens = tokenize(argv[1]);
-  write_tokens(argv[2], file_tokens);
+int main(int argc, const char*argv[]) {
+  std::string filename_in, filename_out;
+  if (argc > 1) if (std::string(argv[1]).size()) filename_in = argv[1];
+  if (argc > 2) if (std::string(argv[2]).size()) filename_out = argv[2];
+
+  if (!filename_in.size())  {
+    std::cout << "Insert filename_in: ";
+    std::cin >> filename_in;
+  }
+  if (!filename_out.size())  {
+    std::cout << "Insert filename_out: ";
+    std::cin >> filename_out;
+  }
+  std::vector< std::vector<std::string> > file_tokens = tokenize(filename_in);
+  write_tokens(filename_out, file_tokens);
   return 0;
 }
 
