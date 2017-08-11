@@ -1,5 +1,5 @@
 /******************************************************************************
-Copyright 2015 Stefano Sinigardi
+Copyright 2015-2017 Stefano Sinigardi
 The program is distributed under the terms of the GNU General Public License
 ******************************************************************************/
 
@@ -22,9 +22,6 @@ along with ScriptLogCleaner.  If not, see <http://www.gnu.org/licenses/>.
 
 
 
-#define _USE_MATH_DEFINES
-#define _CRT_SECURE_NO_WARNINGS
-#define _SCL_SECURE_NO_WARNINGS
 #define ORIGINAL_COMMA_SEPARATION_VALUES ";"
 //#define ORIGINAL_COMMA_SEPARATION_VALUES "\t ,;:"
 #define COMMA_SEPARATION_VALUE ';'

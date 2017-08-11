@@ -1,0 +1,29 @@
+language: cpp
+
+os:
+  - linux
+  - osx
+
+compiler: 
+    - gcc
+    - clang
+
+addons:
+  apt:
+    sources:
+    - ubuntu-toolchain-r-test
+    packages:
+    - gcc-5
+    - g++-5
+    - libboost-all-dev
+
+matrix:
+    exclude:
+    - os: osx
+      compiler: gcc
+    - os: linux
+      compiler: clang
+
+script:
+  - mkdir build && cd build && cmake .. && cmake --build . --target install && cd ..
+
